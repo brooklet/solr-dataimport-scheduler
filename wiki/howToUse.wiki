@@ -1,4 +1,4 @@
-#使用说明.
+# 使用说明.
 
 === solr-dataimport-scheduler使用说明 ===
   * 将apache-solr-dataimportscheduler-1.0.jar, apache-solr-dataimporthandler-*.jar, apache-solr-dataimporthandler-extras-*.jar 放到solr.war的lib目录下面 *
