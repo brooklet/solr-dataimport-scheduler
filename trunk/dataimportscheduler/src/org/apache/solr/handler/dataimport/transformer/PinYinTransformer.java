@@ -32,8 +32,10 @@ public class PinYinTransformer extends Transformer {
 				if (java.lang.Character.toString(t1[i]).matches(
 						"[\\u4E00-\\u9FA5]+")) {
 					t2 = PinyinHelper.toHanyuPinyinStringArray(t1[i], t3);
-					t4 += t2[0];
-					t4 += " ";
+					if (t2 != null) {
+						t4 += t2[0];
+						t4 += " ";
+					}
 				} else
 					t4 += java.lang.Character.toString(t1[i]);
 			}
@@ -77,7 +79,7 @@ public class PinYinTransformer extends Transformer {
 
 				if (value != null) {
 					String namePinyin = getPingYin(value);
-					row.put(columnName, namePinyin.trim());
+					row.put(columnName, namePinyin);
 				}
 			}
 
@@ -91,33 +93,26 @@ public class PinYinTransformer extends Transformer {
 
 				if (value != null) {
 					String namePinYinHeadChar = getPinYinHeadChar(value);
-					row.put(columnName, namePinYinHeadChar.trim());
+					row.put(columnName, namePinYinHeadChar);
 				}
 			}
 		}
 		return row;
 	}
-	
-/*
-	public Map<String, Object> transformRow(Map<String, Object> row) {
-		String gameName = (String) row.get("gameName");
-		if (gameName != null) {
-			String namePinyin = getPingYin(gameName);
-			String namePinYinHeadChar = getPinYinHeadChar(gameName);
-			row.put("namePinyin", namePinyin.trim());
-			row.put("namePinYinHeadChar", namePinYinHeadChar.trim());
-		}
-		return row;
-	}
 
-	public static void main(String[] args) {
-		String cnStr = "中华人民共和国sdlfksldfsdf嘅囧誰說壞學生來勼髮視頻裆児";
-		Map<String, Object> row = new HashMap<String, Object>();
-		row.put("gameName", cnStr);
-
-		GamePinYinTransformer gamePinYinTransformer = new GamePinYinTransformer();
-		row = gamePinYinTransformer.transformRow(row);
-		System.out.println(row);
-	}
-	*/
+	/*
+	 * public Map<String, Object> transformRow(Map<String, Object> row) { String
+	 * gameName = (String) row.get("gameName"); if (gameName != null) { String
+	 * namePinyin = getPingYin(gameName); String namePinYinHeadChar =
+	 * getPinYinHeadChar(gameName); row.put("namePinyin", namePinyin.trim());
+	 * row.put("namePinYinHeadChar", namePinYinHeadChar.trim()); } return row; }
+	 * 
+	 * public static void main(String[] args) { String cnStr =
+	 * "中华人民共和国sdlfksldfsdf嘅囧誰說壞學生來勼髮視頻裆児"; Map<String, Object> row = new
+	 * HashMap<String, Object>(); row.put("gameName", cnStr);
+	 * 
+	 * GamePinYinTransformer gamePinYinTransformer = new
+	 * GamePinYinTransformer(); row = gamePinYinTransformer.transformRow(row);
+	 * System.out.println(row); }
+	 */
 }
