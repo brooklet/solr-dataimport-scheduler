@@ -83,7 +83,7 @@ public abstract class BaseTimerTask extends TimerTask {
 		if (interval == null || interval.isEmpty() || getIntervalInt() <= 0)
 			interval = "30";
 		if (reBuildIndexBeginTime == null || reBuildIndexBeginTime.isEmpty())
-			interval = "00:00:00";
+			reBuildIndexBeginTime = "00:00:00";
 		if (reBuildIndexInterval == null || reBuildIndexInterval.isEmpty()
 				|| getReBuildIndexIntervalInt() <= 0)
 			reBuildIndexInterval = "0";
