@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class BaseTimerTask extends TimerTask {
-	protected String syncEnabled;
+	protected String syncEnabled = "0";
 	protected String[] syncCores;
 	protected String server;
 	protected String port;
@@ -23,6 +23,7 @@ public abstract class BaseTimerTask extends TimerTask {
 	protected String params;
 	protected String interval;
 	protected String cores;
+	protected String startDelaySeconds;
 	protected SolrDataImportProperties p;
 	protected boolean singleCore;
 
@@ -56,12 +57,14 @@ public abstract class BaseTimerTask extends TimerTask {
 	protected void reloadParams() {
 		p.loadProperties(true);
 		syncEnabled = p.getProperty(SolrDataImportProperties.SYNC_ENABLED);
+		
 		cores = p.getProperty(SolrDataImportProperties.SYNC_CORES);
 		server = p.getProperty(SolrDataImportProperties.SERVER);
 		port = p.getProperty(SolrDataImportProperties.PORT);
 		webapp = p.getProperty(SolrDataImportProperties.WEBAPP);
 		params = p.getProperty(SolrDataImportProperties.PARAMS);
 		interval = p.getProperty(SolrDataImportProperties.INTERVAL);
+		startDelaySeconds = p.getProperty(SolrDataImportProperties.STARTDELAYSECONDS);
 		syncCores = cores != null ? cores.split(",") : null;
 
 		reBuildIndexParams = p
@@ -166,6 +169,18 @@ public abstract class BaseTimerTask extends TimerTask {
 		}
 	}
 
+	public int getStartDelaySecondsInt() {
+		try {
+			return Integer.parseInt(startDelaySeconds);
+		} catch (NumberFormatException e) {
+			logger.warn(
+					"Unable to convert 'startDelaySeconds' to number. Using default value (60) instead",
+					e);
+			return 60; // return default in case of error
+		}
+	}
+
+	
 	public int getReBuildIndexIntervalInt() {
 		try {
 			return Integer.parseInt(reBuildIndexInterval);

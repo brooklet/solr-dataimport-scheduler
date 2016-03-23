@@ -7,9 +7,8 @@ import java.util.Map;
 
 import org.apache.solr.handler.dataimport.Context;
 import org.apache.solr.handler.dataimport.ContextImpl;
-import org.apache.solr.handler.dataimport.DataConfig;
 import org.apache.solr.handler.dataimport.Transformer;
-import org.apache.solr.handler.dataimport.DataConfig.Entity;
+import org.apache.solr.handler.dataimport.config.Entity;
 
 public class EnglishWordToChar extends Transformer {
 
@@ -40,6 +39,7 @@ public class EnglishWordToChar extends Transformer {
 		return row;
 	}
 
+	/*
 	public static void main(String[] args) {
 		String value = "徒步旅行 Walkabout Journeys";
 		value = value.replaceAll("(\\S{1})", "$1 ");
@@ -50,7 +50,7 @@ public class EnglishWordToChar extends Transformer {
 		row.put("gameName", cnStr);
 		row.put("nameToCharacter", cnStr);
 
-		DataConfig.Entity ent = new Entity();
+		Entity ent = new Entity();
 		ArrayList<Map<String, String>> allFieldsList = new ArrayList<Map<String, String>>();
 
 		Map<String, String> field1 = new HashMap<String, String>();
@@ -68,5 +68,5 @@ public class EnglishWordToChar extends Transformer {
 		row = gamePinYinTransformer.transformRow(row, context);
 		System.out.println(row);
 	}
-
+*/
 }

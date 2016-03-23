@@ -5,18 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.solr.handler.dataimport.Context;
+import org.apache.solr.handler.dataimport.ContextImpl;
+import org.apache.solr.handler.dataimport.Transformer;
+import org.apache.solr.handler.dataimport.config.Entity;
+
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
-
-import org.apache.solr.handler.dataimport.Context;
-import org.apache.solr.handler.dataimport.ContextImpl;
-import org.apache.solr.handler.dataimport.DataConfig;
-import org.apache.solr.handler.dataimport.DataConfig.Entity;
-import org.apache.solr.handler.dataimport.Transformer;
 
 public class PinYinTransformer extends Transformer {
 
@@ -161,6 +160,7 @@ public class PinYinTransformer extends Transformer {
 		return row;
 	}
 
+	/*
 	public static void main(String[] args) {
 		// String cnStr = "获取汉语拼音并首字母sdlfksldfsdf嘅囧誰說壞學生來勼髮視頻裆児";
 		String cnStr = "NBA2K9";
@@ -171,7 +171,7 @@ public class PinYinTransformer extends Transformer {
 		row.put("namePinYinHeadCharSep", cnStr);
 		row.put("namePinYinHeadCharFirst", cnStr);
 
-		DataConfig.Entity ent = new Entity();
+		Entity ent = new Entity();
 		ArrayList<Map<String, String>> allFieldsList = new ArrayList<Map<String, String>>();
 
 		Map<String, String> field1 = new HashMap<String, String>();
@@ -204,5 +204,5 @@ public class PinYinTransformer extends Transformer {
 		row = gamePinYinTransformer.transformRow(row, context);
 		System.out.println(row);
 	}
-
+*/
 }

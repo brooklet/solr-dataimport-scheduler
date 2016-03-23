@@ -13,8 +13,7 @@ import org.slf4j.LoggerFactory;
 
 public class ApplicationListener implements ServletContextListener {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(ApplicationListener.class);
+	private static final Logger logger = LoggerFactory.getLogger(ApplicationListener.class);
 
 	@Override
 	public void contextDestroyed(ServletContextEvent servletContextEvent) {
@@ -22,8 +21,7 @@ public class ApplicationListener implements ServletContextListener {
 
 		// get our timer from the context
 		Timer timer = (Timer) servletContext.getAttribute("timer");
-		Timer fullImportTimer = (Timer) servletContext
-				.getAttribute("fullImportTimer");
+		Timer fullImportTimer = (Timer) servletContext.getAttribute("fullImportTimer");
 
 		// cancel all active tasks in the timers queue
 		if (timer != null)
@@ -44,8 +42,8 @@ public class ApplicationListener implements ServletContextListener {
 			// 增量更新任务计划
 			// create the timer and timer task objects
 			Timer timer = new Timer();
-			DeltaImportHTTPPostScheduler task = new DeltaImportHTTPPostScheduler(
-					servletContext.getServletContextName(), timer);
+			DeltaImportHTTPPostScheduler task = new DeltaImportHTTPPostScheduler(servletContext.getServletContextName(),
+					timer);
 
 			// get our interval from HTTPPostScheduler
 			int interval = task.getIntervalInt();
@@ -53,10 +51,15 @@ public class ApplicationListener implements ServletContextListener {
 			// get a calendar to set the start time (first run)
 			Calendar calendar = Calendar.getInstance();
 
+			int startDelaySeconds = task.getStartDelaySecondsInt();
+
+			logger.warn(
+					"Delta Import Schedule enabled. startDelaySeconds: " + startDelaySeconds + " interval:" + interval);
+
 			// set the first run to now + interval (to avoid fireing while the
 			// app/server is starting)
-			// 最快不低于10秒
-			calendar.add(Calendar.SECOND, (interval < 10 ? 10 : interval));
+			// 最快不低于1秒
+			calendar.add(Calendar.SECOND, (startDelaySeconds < 1 ? 1 : startDelaySeconds));
 			Date startTime = calendar.getTime();
 
 			// schedule the task
@@ -72,8 +75,7 @@ public class ApplicationListener implements ServletContextListener {
 			FullImportHTTPPostScheduler fullImportTask = new FullImportHTTPPostScheduler(
 					servletContext.getServletContextName(), fullImportTimer);
 
-			int reBuildIndexInterval = fullImportTask
-					.getReBuildIndexIntervalInt();
+			int reBuildIndexInterval = fullImportTask.getReBuildIndexIntervalInt();
 			if (reBuildIndexInterval <= 0) {
 				logger.warn("Full Import Schedule disabled");
 				return;
@@ -82,16 +84,17 @@ public class ApplicationListener implements ServletContextListener {
 			Calendar fullImportCalendar = Calendar.getInstance();
 			Date beginDate = fullImportTask.getReBuildIndexBeginTime();
 			fullImportCalendar.setTime(beginDate);
-			fullImportCalendar.add(Calendar.SECOND,
-					(reBuildIndexInterval < 10 ? 10 : reBuildIndexInterval));
+			fullImportCalendar.add(Calendar.SECOND, (reBuildIndexInterval < 10 ? 10 : reBuildIndexInterval));
 			Date fullImportStartTime = fullImportCalendar.getTime();
 
 			// schedule the task
-			fullImportTimer.scheduleAtFixedRate(fullImportTask,
-					fullImportStartTime, 1000 * reBuildIndexInterval);
+			fullImportTimer.scheduleAtFixedRate(fullImportTask, fullImportStartTime, 1000 * reBuildIndexInterval);
 
 			// save the timer in context
 			servletContext.setAttribute("fullImportTimer", fullImportTimer);
+
+			logger.warn("Full Import Schedule enabled. fullImportStartTime: " + fullImportStartTime
+					+ " reBuildIndexInterval: " + reBuildIndexInterval);
 
 		} catch (Exception e) {
 			if (e.getMessage().endsWith("disabled")) {

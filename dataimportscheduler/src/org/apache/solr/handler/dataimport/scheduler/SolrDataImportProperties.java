@@ -1,5 +1,6 @@
 package org.apache.solr.handler.dataimport.scheduler;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,43 +20,49 @@ public class SolrDataImportProperties {
 	public static final String WEBAPP = "webapp";
 	public static final String PARAMS = "params";
 	public static final String INTERVAL = "interval";
+	public static final String STARTDELAYSECONDS ="startDelaySeconds";
 
 	public static final String REBUILDINDEXPARAMS = "reBuildIndexParams";
 	public static final String REBUILDINDEXBEGINTIME = "reBuildIndexBeginTime";
 	public static final String REBUILDINDEXINTERVAL = "reBuildIndexInterval";
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(SolrDataImportProperties.class);
+	private static final Logger logger = LoggerFactory.getLogger(SolrDataImportProperties.class);
 
 	public SolrDataImportProperties() {
 		// loadProperties(true);
 	}
 
 	public void loadProperties(boolean force) {
+		boolean res = false;
 		try {
-			SolrResourceLoader loader = new SolrResourceLoader(null);
-			logger.info("Instance dir = " + loader.getInstanceDir());
+			SolrResourceLoader loader = new SolrResourceLoader();
+			// logger.info("Instance dir = " + loader.getInstanceDir());
+			logger.info("configDir dir = " + (loader.getConfigDir() == null ? "" : loader.getConfigDir()));
+			logger.info("getDataDir dir = " + (loader.getDataDir() == null ? "" : loader.getDataDir()));
+			logger.info("getInstancePath dir = " + (loader.getInstancePath() == null ? "" : loader.getInstancePath()));
 
-			String configDir = loader.getConfigDir();
-			configDir = SolrResourceLoader.normalizeDir(configDir);
+			String instancePath = loader.getInstancePath().toString();
+			logger.info("configDir dir = " + instancePath);
+
+			instancePath = SolrResourceLoader.normalizeDir(instancePath);
+			String dataImportPropertiesPath = instancePath + "dataimport.properties";
+			logger.info("dataImportPropertiesPath = " + dataImportPropertiesPath);
+
+			if ((new File(dataImportPropertiesPath)).exists()) {
+				res = true;
+			}
 			if (force || properties == null) {
 				properties = new Properties();
-
-				String dataImportPropertiesPath = configDir
-						+ "dataimport.properties";
-
-				FileInputStream fis = new FileInputStream(
-						dataImportPropertiesPath);
-				properties.load(fis);
+				if ((new File(dataImportPropertiesPath)).exists()) {
+					FileInputStream fis = new FileInputStream(dataImportPropertiesPath);
+					properties.load(fis);
+					fis.close();
+				}
 			}
 		} catch (FileNotFoundException fnfe) {
-			logger.error(
-					"Error locating DataImportScheduler dataimport.properties file",
-					fnfe);
+			logger.error("Error locating DataImportScheduler dataimport.properties file", fnfe);
 		} catch (IOException ioe) {
-			logger.error(
-					"Error reading DataImportScheduler dataimport.properties file",
-					ioe);
+			logger.error("Error reading DataImportScheduler dataimport.properties file", ioe);
 		} catch (Exception e) {
 			logger.error("Error loading DataImportScheduler properties", e);
 		}

@@ -4,9 +4,9 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/servlet-api-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/apache-solr-core-3.6.0.jar"/>
-	<classpathentry kind="lib" path="lib/apache-solr-dataimporthandler-3.6.0.jar"/>
-	<classpathentry kind="lib" path="lib/apache-solr-dataimporthandler-extras-3.6.0.jar"/>
 	<classpathentry kind="lib" path="lib/pinyin4j-2.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/solr-core-5.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/solr-dataimporthandler-5.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/solr-dataimporthandler-extras-5.5.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
