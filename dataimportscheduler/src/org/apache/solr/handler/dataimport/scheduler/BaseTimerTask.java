@@ -31,8 +31,7 @@ public abstract class BaseTimerTask extends TimerTask {
 	protected String reBuildIndexBeginTime;
 	protected String reBuildIndexInterval;
 
-	protected static final Logger logger = LoggerFactory
-			.getLogger(BaseTimerTask.class);
+	protected static final Logger logger = LoggerFactory.getLogger(BaseTimerTask.class);
 
 	public BaseTimerTask(String webAppName, Timer t) throws Exception {
 		// load properties from global dataimport.properties
@@ -40,11 +39,10 @@ public abstract class BaseTimerTask extends TimerTask {
 		reloadParams();
 		fixParams(webAppName);
 
-		if (!syncEnabled.equals("1"))
+		if (syncEnabled == null || !syncEnabled.equals("1"))
 			throw new Exception("Schedule disabled");
 
-		if (syncCores == null
-				|| (syncCores.length == 1 && syncCores[0].isEmpty())) {
+		if (syncCores == null || (syncCores.length == 1 && syncCores[0].isEmpty())) {
 			singleCore = true;
 			logger.info("<index update process> Single core identified in dataimport.properties");
 		} else {
@@ -57,7 +55,7 @@ public abstract class BaseTimerTask extends TimerTask {
 	protected void reloadParams() {
 		p.loadProperties(true);
 		syncEnabled = p.getProperty(SolrDataImportProperties.SYNC_ENABLED);
-		
+
 		cores = p.getProperty(SolrDataImportProperties.SYNC_CORES);
 		server = p.getProperty(SolrDataImportProperties.SERVER);
 		port = p.getProperty(SolrDataImportProperties.PORT);
@@ -67,12 +65,9 @@ public abstract class BaseTimerTask extends TimerTask {
 		startDelaySeconds = p.getProperty(SolrDataImportProperties.STARTDELAYSECONDS);
 		syncCores = cores != null ? cores.split(",") : null;
 
-		reBuildIndexParams = p
-				.getProperty(SolrDataImportProperties.REBUILDINDEXPARAMS);
-		reBuildIndexBeginTime = p
-				.getProperty(SolrDataImportProperties.REBUILDINDEXBEGINTIME);
-		reBuildIndexInterval = p
-				.getProperty(SolrDataImportProperties.REBUILDINDEXINTERVAL);
+		reBuildIndexParams = p.getProperty(SolrDataImportProperties.REBUILDINDEXPARAMS);
+		reBuildIndexBeginTime = p.getProperty(SolrDataImportProperties.REBUILDINDEXBEGINTIME);
+		reBuildIndexInterval = p.getProperty(SolrDataImportProperties.REBUILDINDEXINTERVAL);
 
 	}
 
@@ -87,20 +82,17 @@ public abstract class BaseTimerTask extends TimerTask {
 			interval = "30";
 		if (reBuildIndexBeginTime == null || reBuildIndexBeginTime.isEmpty())
 			reBuildIndexBeginTime = "00:00:00";
-		if (reBuildIndexInterval == null || reBuildIndexInterval.isEmpty()
-				|| getReBuildIndexIntervalInt() <= 0)
+		if (reBuildIndexInterval == null || reBuildIndexInterval.isEmpty() || getReBuildIndexIntervalInt() <= 0)
 			reBuildIndexInterval = "0";
 	}
 
 	protected void prepUrlSendHttpPost(String params) {
-		String coreUrl = "http://" + server + ":" + port + "/" + webapp
-				+ params;
+		String coreUrl = "http://" + server + ":" + port + "/" + webapp + params;
 		sendHttpPost(coreUrl, null);
 	}
 
 	protected void prepUrlSendHttpPost(String coreName, String params) {
-		String coreUrl = "http://" + server + ":" + port + "/" + webapp + "/"
-				+ coreName + params;
+		String coreUrl = "http://" + server + ":" + port + "/" + webapp + "/" + coreName + params;
 		sendHttpPost(coreUrl, coreName);
 	}
 
@@ -111,9 +103,7 @@ public abstract class BaseTimerTask extends TimerTask {
 		// prepare the core var
 		String core = coreName == null ? "" : "[" + coreName + "] ";
 
-		logger.info(core
-				+ "<index update process> Process started at .............. "
-				+ df.format(startTime));
+		logger.info(core + "<index update process> Process started at .............. " + df.format(startTime));
 
 		try {
 
@@ -127,12 +117,9 @@ public abstract class BaseTimerTask extends TimerTask {
 			// Send HTTP POST
 			conn.connect();
 
-			logger.info(core + "<index update process> Full URL\t\t\t\t"
-					+ conn.getURL());
-			logger.info(core + "<index update process> Response message\t\t\t"
-					+ conn.getResponseMessage());
-			logger.info(core + "<index update process> Response code\t\t\t"
-					+ conn.getResponseCode());
+			logger.info(core + "<index update process> Full URL\t\t\t\t" + conn.getURL());
+			logger.info(core + "<index update process> Response message\t\t\t" + conn.getResponseMessage());
+			logger.info(core + "<index update process> Response code\t\t\t" + conn.getResponseCode());
 
 			// listen for change in properties file if an error occurs
 			if (conn.getResponseCode() != 200) {
@@ -140,19 +127,13 @@ public abstract class BaseTimerTask extends TimerTask {
 			}
 
 			conn.disconnect();
-			logger.info(core
-					+ "<index update process> Disconnected from server\t\t"
-					+ server);
+			logger.info(core + "<index update process> Disconnected from server\t\t" + server);
 			Date endTime = new Date();
-			logger.info(core
-					+ "<index update process> Process ended at ................ "
-					+ df.format(endTime));
+			logger.info(core + "<index update process> Process ended at ................ " + df.format(endTime));
 		} catch (MalformedURLException mue) {
 			logger.error("Failed to assemble URL for HTTP POST", mue);
 		} catch (IOException ioe) {
-			logger.error(
-					"Failed to connect to the specified URL while trying to send HTTP POST",
-					ioe);
+			logger.error("Failed to connect to the specified URL while trying to send HTTP POST", ioe);
 		} catch (Exception e) {
 			logger.error("Failed to send HTTP POST", e);
 		}
@@ -162,9 +143,7 @@ public abstract class BaseTimerTask extends TimerTask {
 		try {
 			return Integer.parseInt(interval);
 		} catch (NumberFormatException e) {
-			logger.warn(
-					"Unable to convert 'interval' to number. Using default value (30) instead",
-					e);
+			logger.warn("Unable to convert 'interval' to number. Using default value (30) instead", e);
 			return 30; // return default in case of error
 		}
 	}
@@ -173,21 +152,16 @@ public abstract class BaseTimerTask extends TimerTask {
 		try {
 			return Integer.parseInt(startDelaySeconds);
 		} catch (NumberFormatException e) {
-			logger.warn(
-					"Unable to convert 'startDelaySeconds' to number. Using default value (60) instead",
-					e);
+			logger.warn("Unable to convert 'startDelaySeconds' to number. Using default value (60) instead", e);
 			return 60; // return default in case of error
 		}
 	}
 
-	
 	public int getReBuildIndexIntervalInt() {
 		try {
 			return Integer.parseInt(reBuildIndexInterval);
 		} catch (NumberFormatException e) {
-			logger.info(
-					"Unable to convert 'reBuildIndexInterval' to number. do't rebuild index.",
-					e);
+			logger.info("Unable to convert 'reBuildIndexInterval' to number. do't rebuild index.", e);
 			return 0; // return default in case of error
 		}
 	}
@@ -198,25 +172,19 @@ public abstract class BaseTimerTask extends TimerTask {
 			SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
 			String dateStr = sdfDate.format(new Date());
 			beginDate = sdfDate.parse(dateStr);
-			if (reBuildIndexBeginTime == null
-					|| reBuildIndexBeginTime.isEmpty()) {
+			if (reBuildIndexBeginTime == null || reBuildIndexBeginTime.isEmpty()) {
 				return beginDate;
 			}
 			if (reBuildIndexBeginTime.matches("\\d{2}:\\d{2}:\\d{2}")) {
-				SimpleDateFormat sdf = new SimpleDateFormat(
-						"yyyy-MM-dd HH:mm:ss");
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				beginDate = sdf.parse(dateStr + " " + reBuildIndexBeginTime);
-			} else if (reBuildIndexBeginTime
-					.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")) {
-				SimpleDateFormat sdf = new SimpleDateFormat(
-						"yyyy-MM-dd HH:mm:ss");
+			} else if (reBuildIndexBeginTime.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				beginDate = sdf.parse(reBuildIndexBeginTime);
 			}
 			return beginDate;
 		} catch (ParseException e) {
-			logger.warn(
-					"Unable to convert 'reBuildIndexBeginTime' to date. use now time.",
-					e);
+			logger.warn("Unable to convert 'reBuildIndexBeginTime' to date. use now time.", e);
 			return beginDate;
 		}
 	}

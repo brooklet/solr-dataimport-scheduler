@@ -20,7 +20,7 @@ public class SolrDataImportProperties {
 	public static final String WEBAPP = "webapp";
 	public static final String PARAMS = "params";
 	public static final String INTERVAL = "interval";
-	public static final String STARTDELAYSECONDS ="startDelaySeconds";
+	public static final String STARTDELAYSECONDS = "startDelaySeconds";
 
 	public static final String REBUILDINDEXPARAMS = "reBuildIndexParams";
 	public static final String REBUILDINDEXBEGINTIME = "reBuildIndexBeginTime";
@@ -69,6 +69,11 @@ public class SolrDataImportProperties {
 	}
 
 	public String getProperty(String key) {
-		return properties.getProperty(key);
+		if (properties != null && !properties.isEmpty()) {
+			return properties.getProperty(key);
+		} else {
+			return null;
+		}
+
 	}
 }
